@@ -1,0 +1,12 @@
+{% extends "gamestore/main.html" %}
+
+{% block content %}
+
+<h4>Transaction cancelled</h4>
+<p>Redirecting you back to games page...</p>
+<script type="text/javascript">
+        setTimeout(function() {
+            window.location.href = "/games/";
+        }, 2000);
+</script>
+{% endblock %}

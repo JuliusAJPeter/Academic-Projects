@@ -1,0 +1,262 @@
+{% extends "gamestore/main.html" %}
+
+{% load gamestore_tags %}
+{% block title %}Developer page{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col s6">
+      <ul class="tabs tabs-fixed-width lighten-2" style="background-color: transparent;">
+        <li class="tab col s3 "><a class="active teal-text" href="#inventory">Your games</a></li>
+        <li class="tab col s3 "><a class="teal-text" href="#history">Sales history</a></li>
+        <div class="indicator teal" style="z-index:1"></div>
+      </ul>
+    </div>
+</div>
+<div id="inventory">
+            <h5>Games in your inventory</h5>
+                <table class="bordered highlight">
+                    <thead>
+                        <tr>
+                            <th data-field="name">Name</th>
+                            <th data-field="category">Category</th>
+                            <th data-field="description">Description</th>
+                            <th data-field="price">Price(EUR)</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    
+                    {% for game in list_of_games %}
+                    <tr>
+                        <td >{{game.name}}</td>
+                        <td >{{game.get_category_display}}</td>
+                        <td >{{game.description}}</td>
+                        <td >{{game.price}}</td>
+                        <td ><a href="/editgame/{{game.id}}"><i class="material-icons">mode_edit</i></a></td>
+                        <td ><a href="/delgame/{{game.id}}"><i class="material-icons">delete</i></a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+        <br>
+
+        <div id="stat">
+        <a class="btn-floating btn-large waves-effect waves-light teal" href="{% url 'addgame' %}"><i class="material-icons">add</i></a>
+        <br><br>
+        </div>
+</div>
+<div id="history">
+    <form id="timeSelector">
+        <p>
+            <input class="with-gap" name="timescale" type="radio" id="week" value="week" checked/>
+            <label for="week">Week</label>
+        </p>
+        <p>
+            <input class="with-gap" name="timescale" type="radio" id="month" value="month" />
+            <label for="month">Month</label>
+        </p>
+        <p>
+            <input class="with-gap" name="timescale" type="radio" id="year" value="year" />
+            <label for="year">Year</label>
+        </p>
+    </form>
+        <canvas id="myChart" width="800" height="400"></canvas>
+
+            <script>
+
+                function newDate(days) {
+                  return moment().subtract(days, 'days').startOf('day');
+                }
+
+                function newMonth(months) {
+                    return moment().subtract(months, 'months').startOf('month');
+                }
+
+                function dateLabels(scale){
+                    labels = []
+                    switch(scale){
+                        case "week":
+                            for (var i = 0; i < 7; i++) {
+                                labels.push(newDate(i))
+                            };
+                            break;
+                        case "month":
+                            for (var i = 0; i < 30; i++) {
+                                labels.push(newDate(i))
+                            };
+                            break;
+                        case "year":
+                            for (var i = 0; i < 12; i++) {
+                                labels.push(newMonth(i))
+                            };
+                            break;
+                    }
+                    console.log(labels);
+                    return labels;
+                }
+
+
+                function getSalesData(game_pk, scale){
+                    count = [];
+                    labels = dateLabels(scale);
+                    granularity = 'day';
+                    $.each(labels, function(index, value){
+                        counter = 0;
+                        {% for transaction in transactions %}
+                        if({{transaction.game.pk}} == game_pk){
+                            if(scale == "year"){
+                                granularity = 'month';
+                            }
+                            if(moment("{{transaction.time_confirmed|date:'c'}}")
+                                .isSame(moment(value,"MMM DD"), granularity)){
+                                counter++;
+                            }
+                        }
+                        {% endfor %}
+                        count.push(counter);
+                    });
+                    return count;
+
+                }
+
+                game_colors = {}
+
+                function getColor(game_pk) {
+                    if(game_pk in game_colors){
+                        return game_colors[game_pk];
+                    }else{
+                        var letters = '0123456789ABCDEF'.split('');
+                        var color = '#';
+                        for (var i = 0; i < 6; i++ ) {
+                            color += letters[Math.floor(Math.random() * 16)];
+                        }
+                        
+
+                        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+                        var rgb = result ? {
+                                r: parseInt(result[1], 16),
+                                g: parseInt(result[2], 16),
+                                b: parseInt(result[3], 16)
+                            } : null;
+
+                        var rgba = "rgba("+rgb.r+","+rgb.g+","+rgb.b+",0.4)";
+
+                        game_colors[game_pk] = rgba;
+                        return rgba;
+                    }    
+                }
+
+                $('input[type=radio][name=timescale]').change(function() {
+                    myChart.destroy();
+                    createChart();
+                });
+
+                function chooseUnit(scale){
+                    var unit;
+                    switch(scale){
+                        case "week":
+                            unit = 'day';
+                            break;
+                        case "month":
+                            unit = 'day';
+                            break;
+                        case "year":
+                            unit = 'month'
+                            break;
+                    }
+                    return unit;
+                }
+
+
+                var myChart;
+                var ctx = document.getElementById("myChart");
+                createChart();
+
+                function createChart(){
+                  var scale = $("#timeSelector input[name='timescale']:checked").val();
+                  myChart = new Chart(ctx, {
+                  type: 'line',
+                  data: {
+                    labels: dateLabels(scale),
+                    datasets: [
+                    {% for game in list_of_games %}
+                    {
+                      label: '{{game.name}}',
+                      data: getSalesData({{game.pk}}, scale),
+                      backgroundColor: getColor({{game.pk}}),
+                    },
+                    {% endfor %}
+                    ]},
+                    options:{
+                        tooltips: {
+                            enabled: true,
+                            mode: 'point',
+                            callbacks: {
+                                title: function(tooltipItem, data){
+                                    var title = moment(tooltipItem[0].xLabel._d).format("MMM DD");
+                                    if(scale == "year"){
+                                        title = moment(tooltipItem[0].xLabel._d).format("MMMM");
+                                    }
+                                    return title
+                                }
+                            }
+                        },
+                        scales: {
+                            xAxes: [{
+                                 ticks: {
+                                    autoSkip : true,
+                                    autoSkipPadding: 5
+                                },
+                                gridLines : {
+                                    display : false,
+                                },
+                                type: 'time',
+                                
+                                time:{
+                                    unit: chooseUnit(scale),
+                                    displayFormats: { 
+                                       'day': 'MMM DD',
+                                       'month': 'MMMM'
+                                }
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    min: 0,
+                                    stepSize: 1,
+                                }
+
+                            }]
+                        }
+                    }
+                });
+            }
+            </script>
+        <br>
+        <table class="bordered highlight">
+                    <thead>
+                        <tr>
+                            <th data-field="name">Name</th>
+                            <th data-field="category">Price</th>
+                            <th data-field="description">Total sales(quantity)</th>
+                            <th data-field="price">Total earnings(EUR)</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    
+                    {% for game in list_of_games %}
+                    <tr>
+                        <td >{{game.name}}</td>
+                        <td >{{game.price}}</td>
+                        <td >{{game.sales.count}}</td>
+                        <td >{{game.sales.count|multiply:game.price}}</td>
+                    </tr>
+                    {% endfor %}
+        </table>
+        <br><br>
+
+
+
+</div>
+        
+{% endblock %}

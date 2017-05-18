@@ -1,0 +1,13 @@
+{% extends "gamestore/main.html" %}
+
+{% block content %}
+
+<h4>Transaction successful!</h4>
+<p>Redirecting you to the game page...</p>
+<script type="text/javascript">
+        setTimeout(function() {
+            window.location.href = "/games/{{game.pk}}/";
+        }, 2000);
+</script>
+
+{% endblock %}

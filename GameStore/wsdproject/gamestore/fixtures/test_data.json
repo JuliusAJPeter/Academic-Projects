@@ -1,0 +1,144 @@
+[{  
+      "model":"auth.group",
+      "pk":1,
+      "fields":{  
+         "name":"Developer",
+         "permissions":[  
+
+         ]
+      }
+   },
+   {  
+      "model":"auth.group",
+      "pk":2,
+      "fields":{  
+         "name":"Player",
+         "permissions":[  
+
+         ]
+      }
+   },
+   {  
+      "model":"auth.user",
+      "pk":1,
+      "fields":{  
+         "password":"pbkdf2_sha256$24000$4czK36hfVJnb$L1Pn71clz18vJfgei210PkI0lVieeB4L9kuE+gHf9dw=",
+         "last_login":null,
+         "is_superuser":false,
+         "username":"developer1",
+         "first_name":"",
+         "last_name":"",
+         "email":"developer1@dev.fi",
+         "is_staff":false,
+         "is_active":true,
+         "date_joined":"2017-02-18T11:15:20.882Z",
+         "groups":[  
+            1,
+            2
+         ],
+         "user_permissions":[  
+
+         ]
+      }
+   },
+   {  
+      "model":"auth.user",
+      "pk":2,
+      "fields":{  
+         "password":"pbkdf2_sha256$24000$gqPffgu49wRU$8LsWXNblBVy3fYAgKazCQbYYHrWWyVk/c/pBLNMGU44=",
+         "last_login":null,
+         "is_superuser":false,
+         "username":"player1",
+         "first_name":"",
+         "last_name":"",
+         "email":"player1@player.fi",
+         "is_staff":false,
+         "is_active":true,
+         "date_joined":"2017-02-18T11:16:01.780Z",
+         "groups":[  
+            2
+         ],
+         "user_permissions":[  
+
+         ]
+      }
+   },
+   {  
+      "model":"gamestore.userprofile",
+      "pk":1,
+      "fields":{  
+         "user":1,
+         "activation_key":"5964c0391f45193557e8c37a0b8a89d402918899",
+         "key_expires":"2017-02-20T11:15:21.160Z"
+      }
+   },
+   {  
+      "model":"gamestore.userprofile",
+      "pk":2,
+      "fields":{  
+         "user":2,
+         "activation_key":"1389b9eb7d6056384d05da8576a29ff5b05fd07a",
+         "key_expires":"2017-02-20T11:15:47.098Z"
+      }
+   },
+   {  
+      "model":"gamestore.game",
+      "pk":1,
+      "fields":{  
+         "name":"First test game",
+         "category":"AC",
+         "price":12.0,
+         "description":"Testing description",
+         "url":"http://webcourse.cs.hut.fi/example_game.html",
+         "developer":1
+      }
+   },
+   {  
+      "model":"gamestore.game",
+      "pk":2,
+      "fields":{  
+         "name":"Second testgame",
+         "category":"SH",
+         "price":15.0,
+         "description":"Hardcore shoot em up type of game",
+         "url":"http://webcourse.cs.hut.fi/example_game.html",
+         "developer":1
+      }
+   },
+   {  
+      "model":"gamestore.game",
+      "pk":3,
+      "fields":{  
+         "name":"Third testgame",
+         "category":"PZ",
+         "price":9.0,
+         "description":"Tricky puzzle",
+         "url":"http://webcourse.cs.hut.fi/example_game.html",
+         "developer":1
+      }
+   },
+   {  
+      "model":"gamestore.game",
+      "pk":4,
+      "fields":{  
+         "name":"Fourth testgame",
+         "category":"SH",
+         "price":18.0,
+         "description":"Another awesome shoot em up game",
+         "url":"http://webcourse.cs.hut.fi/example_game.html",
+         "developer":1
+      }
+   },
+   {  
+      "model":"gamestore.game",
+      "pk":5,
+      "fields":{  
+         "name":"Fifth testgame",
+         "category":"AD",
+         "price":15.0,
+         "description":"Crazy adventure game",
+         "url":"http://webcourse.cs.hut.fi/example_game.html",
+         "developer":1
+      }
+   }
+]

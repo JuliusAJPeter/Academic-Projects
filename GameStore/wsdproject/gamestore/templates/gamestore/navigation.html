@@ -1,0 +1,37 @@
+{% load gamestore_tags %}
+<nav>
+    <div class="nav-wrapper grey darken-2">
+<!--       <a href="#" class="brand-logo right">Logo</a> -->
+
+<!--         {% url 'devpage' as url %}
+        <li><a href="{{ url }}">Developer</a></li> -->
+		<ul id="nav-mobile" class="right">
+			{% if user.is_authenticated %}
+				<li><span>Hello, {{user.get_full_name|default:user.username}}!</span></li>
+				{% url 'logout' as url %}
+				<li><a class="btn" href="{{ url }}">Log out</a></li>
+			{% else %}
+				{% url 'register' as url %}
+				<li><a class="btn" href="{{ url }}">Register</a></li>
+				{% url 'login' as url %}
+				<li><a class="btn" href="{{ url }}">Log in</a></li>
+        		<li><a class="right" href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}"><img id="facebook_login" src="/static/gamestore/logos/fblogo.png" height=35 width=35/></a></li>
+			{% endif %}
+		</ul>
+
+		<ul id="nav-mobile" class="left">
+			{% url 'index' as url %}
+			<li><a href="{{ url }}">Home</a></li>
+			{% url 'games' as url %}
+			<li><a href="{{ url }}">Browse Games</a></li>
+			{% if user.is_authenticated %}
+			{% url 'my_games' as url %}
+			<li><a href="{{ url }}">My Games</a></li>
+			{% endif %}
+			{% if user.is_authenticated and user|isDeveloper %}
+			{% url 'devpage' as url %}
+			<li><a href="{{ url }}">Developer</a></li>
+			{% endif %}
+		</ul>
+    </div>
+</nav>

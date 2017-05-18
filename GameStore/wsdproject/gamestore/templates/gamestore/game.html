@@ -1,0 +1,17 @@
+{% extends "gamestore/main.html" %}
+
+{% block title %}{{ game.name }}{% endblock %}
+
+{% block content %}
+
+	<p>This is the game page for {{game.name}}</p>
+	<iframe id="gameframe" src={{game.url}}></iframe>
+	<h1>Highscores</h1>
+	<p>Refresh page to get the current standings</p>
+	{% for i in highscore%}
+	{% if forloop.counter < 6 %}
+	<p>{{forloop.counter}}.  {{i.user}}  {{i.score}}</br></p>
+	{% endif %}
+{% endfor %}
+
+{% endblock %}

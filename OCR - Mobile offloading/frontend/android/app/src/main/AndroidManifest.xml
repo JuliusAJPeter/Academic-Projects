@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="fi.aalto.cs.e4100.g09.project2"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".app.LoginActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.PhotosActivity"
+            android:label="@string/activity_photos"
+            android:parentActivityName=".app.LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.LoginActivity"/>
+        </activity>
+        <activity
+            android:name=".app.ResultActivity"
+            android:label="@string/activity_result"
+            android:parentActivityName=".app.ResultActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.PhotosActivity"/>
+        </activity>
+        <activity
+            android:name=".app.BenchmarkActivity"
+            android:label="@string/activity_benchmark"
+            android:parentActivityName=".app.PhotosActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="fi.aalto.cs.e4100.g09.project2.app.PhotosActivity"/>
+        </activity>
+        <activity
+            android:name=".app.PhotoActivity"
+            android:label="@string/activity_photo"
+            android:parentActivityName=".app.PhotoActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="fi.aalto.cs.e4100.g09.project2.app.ResultActivity"/>
+        </activity>
+
+
+        <!-- for the image photo taking and saving, see https://developer.android.com/training/camera/photobasics.html -->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="fi.aalto.cs.e4100.g09.project2.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
+
+    </application>
+
+</manifest>

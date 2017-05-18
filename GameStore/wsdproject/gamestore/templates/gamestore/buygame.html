@@ -1,0 +1,21 @@
+{% extends "gamestore/main.html" %}
+{% block content %}
+<h4>Are you sure you want to buy the game {{game.name}}?</h4>
+<p>Price: {{game.price}}</p>
+<form action="{{urls.payment_service_url}}" method="POST">
+    <input type="hidden" name="pid" value="{{pid}}" />
+    <input type="hidden" name="sid" value="{{sid}}" />
+    <input type="hidden" name="success_url"
+            value="{{urls.success_url}}" />
+    <input type="hidden" name="cancel_url"
+            value="{{urls.cancel_url}}" />
+    <input type="hidden" name="error_url"
+            value="{{urls.error_url}}" />
+    <input type="hidden" name="checksum"
+            value="{{checksum}}" />
+
+    <label hidden for="id_amount">Amount</label>
+    <input hidden type="text" id="id_amount" name="amount" value="{{amount}}" />
+    <input class="btn" type="submit" value="Continue"/>
+</form>
+{% endblock %}

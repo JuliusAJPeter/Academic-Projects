@@ -1,0 +1,8 @@
+*.pyc
+wsdproject/db.sqlite3
+.DS_Store
+venv
+staticfiles
+.env
+.coverage
+wsdproject/htmlcov

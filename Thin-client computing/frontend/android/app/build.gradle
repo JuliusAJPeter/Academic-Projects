@@ -1,0 +1,34 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
+
+    defaultConfig {
+        applicationId "fi.aalto.cs.e4100.g09.project1"
+        minSdkVersion 22
+        targetSdkVersion 24
+        versionCode 1
+        versionName "0.1"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.google.android.gms:play-services:9.6.1'
+    compile files('libs/com.antlersoft.android.db.jar')
+    compile files('libs/com.antlersoft.android.contentxml.jar')
+    compile files('libs/jmdns.jar')
+    compile 'commons-codec:commons-codec:1.10'
+    compile 'org.glassfish.tyrus.bundles:tyrus-standalone-client:1.13'
+}

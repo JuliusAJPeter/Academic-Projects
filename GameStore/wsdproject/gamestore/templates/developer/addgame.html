@@ -1,0 +1,11 @@
+{% extends "gamestore/main.html" %}
+
+
+{% block title %}Add game{% endblock %}
+{% block content %}
+  <p><h3>Add new game here</h3></p></br>
+  <form id="addgame_form" action="/addgame/" method="post">{% csrf_token %}
+    {{ addgame_form.as_p }}
+    <input type="submit" name="addgame" value="Add game"/>
+  </form>
+{% endblock %}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:ng="http://angularjs.org" >
+<head>
+    <meta charset="utf-8" />
+    <title>App</title>
+    <link rel="stylesheet" href="styles/bootstrapcosmo.min.css" />
+    <link rel="stylesheet" href="app-content/app.css" />
+</head>
+<body>
+<div ng-app="app1">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#/">
+            <h4 class="brand">
+                Amazing Alpacas 
+            </h4>
+          </a>
+        </div>
+      </div>
+    </nav>
+    <div class="grey-container" style="min-height: 474px;">
+        <div class="container-fluid">
+            <div class="col-sm-8 col-sm-offset-2">
+                <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></div>
+                
+            </div>
+            <div>
+                <div ng-view></div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        
+            <h5>Amazing Alpacas - The best team the world has to offer, when it comes to mobile cloud computing.</h5>
+        
+    </div>
+    <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-route.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-cookies.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/AngularClass/angular-websocket/v2.0.0/dist/angular-websocket.min.js"></script>
+    <script src="app-content/jsCookie.js"></script>
+
+    <script src="app.js"></script>
+    <script src="app-services/authentication.service.js"></script>
+    <script src="app-services/flash.service.js"></script>
+    <script src="app-services/geolocation.service.js"></script>
+    <script src="app-services/image.service.js"></script>
+    <script src="app-services/websocket.service.js"></script>
+    <script src="app-services/crypto.service.js"></script>
+    <script src="app-services/cookie.service.js"></script>
+    <script src="https://cdn.rawgit.com/naptha/tesseract.js/1.0.10/dist/tesseract.js"></script>
+    <script src="home/home.controller.js"></script>
+    <script src="login/login.controller.js"></script>
+    <script src="images/image.controller.js"></script>
+    
+    
+</div>
+</body>
+</html>

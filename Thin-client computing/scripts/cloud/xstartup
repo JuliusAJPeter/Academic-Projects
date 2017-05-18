@@ -1,0 +1,13 @@
+#!/bin/sh
+xrdb /home/mcc_fall_2016_g09/.Xresources
+xsetroot -solid grey
+export XKL_XMODMAP_DISABLE=1
+/etc/X11/Xsession
+if [ "$VNCDESKTOP" = "openoffice" ]; then
+  echo "Launching OpenOffice Writer"
+  soffice -writer
+elif [ "$VNCDESKTOP" = "inkscape" ]; then
+  echo "Launching Inkscape"
+  mkdir -p ~/.config/inkscape   
+  inkscape
+fi

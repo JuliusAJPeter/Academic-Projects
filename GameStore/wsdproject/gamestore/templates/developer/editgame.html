@@ -1,0 +1,15 @@
+{% extends "gamestore/main.html" %}
+
+
+{% block title %}Edit game{% endblock %}
+{% block content %}
+<p><h3>Edit game details</h3></p>
+  <form action="/editgame/{{game.id}}/" method="post">{% csrf_token %}
+    {{ game_form.as_p }}
+    <input type="submit" name="editgame" value="Save changes"/>
+  </form><br>
+  <div id="stat">
+  <a href="{% url 'devpage' %}">Cancel edit?</a>
+  </div>
+
+{% endblock %}

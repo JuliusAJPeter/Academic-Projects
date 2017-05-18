@@ -1,0 +1,23 @@
+
+
+<h5>List of {% if current_category %} {{current_category.1}} {% else %} all {% endif %} games:</h5>
+
+<ul class="collection">
+	<p class="search_indicator grey-lighten-1" id="searching">Search results in category {% if current_category %} "{{current_category.1}}" {% else %} "all" {% endif %}:</p>
+	<p class= "search_indicator grey-lighten-1" id="no_results">No results found :(</p>
+	{% for game in games %}
+		<li class="collection-item avatar game">
+			<span class="title">{{game.name}}</span>
+			<p class="grey-text">{{game.description}}</p>
+			<p>Price: <span class="light-blue-text darken-4">{{game.price}}</span></p>
+			
+			{% if game in owned_games %}
+			{% url 'game' game.pk as url %}
+			<a href="{{ url }}" class="waves-effect waves-light btn">Play</a>
+			{% else %}
+			{% url 'buygame' game.pk as url %}
+			<a href="{{ url }}" class="waves-effect waves-light btn grey darken-2">Buy</a>
+			{% endif %}
+		</li>
+	{% endfor %}
+</ul>

@@ -1,0 +1,43 @@
+﻿
+<section>
+<div class="row">
+	<div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+	<h5>Hi {{vm.username}}!</h5>
+		<div ng-show="vm.loading">
+			<img  src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+		</div>
+		<div ng-show="!vm.loading">
+			<div class="row">
+				<div class="col-xs-12">
+					<h3>Convert new images</h3>
+					<a class="btn btn-primary" href="home/ocr.view.html">Convert Images</a> 
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12">
+					<h3>Your previous images</h3>
+					<div ng-show="!vm.userFiles.length">
+						<h4>No previous images</h4>
+					</div>
+				</div>
+			</div>
+			<div class="row" ng-show="vm.userFiles.length">
+			  <div ng-repeat="file in vm.userFiles"
+			   	class="col-xs-6 col-md-3" >
+			    <button ng-click="vm.selectFile(file)" class="thumbnail" style="cursor: pointer" >
+			       <!--<img ng-src="{{file.imagePath}}" alt="" style="max-height: 250px"></img>-->
+			      	<img ng-src="data:image/png;base64,{{file.thumbnail}}" alt="" style="max-height: 250px"></img>
+			    </button>
+			  </div>
+			</div>
+
+	    </div>
+
+
+	    <div id="display"></div>
+  		<br />
+		<a href="#/login" class="btn btn-sm btn-default">Logout</a>
+	</div>
+</div>
+	
+</section>

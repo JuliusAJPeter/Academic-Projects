@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="fi.aalto.cs.e4100.g09.project2.app.ResultActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_margin="5dp"/>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:layout_margin="5dp"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:height="14dp"
+            android:text="Save to file"
+            android:textColor="#ffffff"
+            android:textSize="15sp">
+        </Button>
+
+        <Button
+            android:id="@+id/retake_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:height="14dp"
+            android:text="Retake picture"
+            android:textColor="#ffffff"
+            android:textSize="15sp">
+        </Button>
+
+        <Button
+            android:id="@+id/source_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:height="14dp"
+            android:text="Show source image"
+            android:textColor="#ffffff"
+            android:textSize="15sp"
+            android:visibility="gone">
+        </Button>
+
+    </LinearLayout>
+
+</LinearLayout>

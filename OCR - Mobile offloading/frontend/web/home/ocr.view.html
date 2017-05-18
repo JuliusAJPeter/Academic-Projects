@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>App</title>
+    <link rel="stylesheet" href="../styles/bootstrapcosmo.min.css" />
+    <link rel="stylesheet" href="../app-content/app.css" />
+</head>
+<body>
+    <div>
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <a class="navbar-brand" href="/">
+                <h4 class="brand">
+                    Amazing Alpacas 
+                </h4>
+              </a>
+            </div>
+          </div>
+        </nav>
+        <div class="grey-container" style="min-height: 474px;">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+                   
+                        <iframe width="0" height="0" border="0" name="dummyframe" id="dummyframe"></iframe>
+                        <form enctype = "multipart/form-data"
+                          action = "/image"
+                          method = "post" target="dummyframe"
+                          id="fileForm">
+                            <input type = "text" name = "appToken" id="appTokenId" style="display: none;">
+                            <label for="fileInput">Choose Files to OCR:</label>
+                            <input type="file" id="fileInput" name="ocrPhoto" multiple />
+                            <br />
+                            <br />
+                            <button type="submit" onclick="ocrHandlerFunction(false)" class="btn btn-primary">Local OCR</button>
+                            <button type="submit" onclick="ocrHandlerFunction(true);" class="btn btn-primary">Benchmark OCR</button>
+                            <button type="submit" class="btn btn-primary" onclick="ocrHandlerFunction(false, true)">Remote OCR</button>
+                        </form>
+                        <br />
+                        
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <br />
+                                
+                                <h5 class="hidden phase"></h5>
+                                <div class="hidden file-name"></div>
+
+                                <div class="progress hidden">
+                                  <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="">
+                                    0%
+                                  </div>
+                                </div>
+                                <div id="document-content" class="hidden">
+                                    <h3>Results:</h3>
+                                    <div class="row">
+                                        <div class="col-xs-8"></div>
+                                    </div>
+                                    <br />
+                                </div>
+                                 <div>
+                                    <a href="/" class="btn btn-sm btn-default">Back</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            
+                <h5>Amazing Alpacas - The best team the world has to offer, when it comes to mobile cloud computing.</h5>
+            
+        </div>
+        <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>    
+        <script src="https://cdn.rawgit.com/naptha/tesseract.js/1.0.10/dist/tesseract.js"></script>
+        <script src="../app-content/jsCookie.js"></script>
+        <script>
+        (function(){
+            var loggedIn = Cookies.get('globals') ? JSON.parse(Cookies.get('globals')) : false;
+            console.log('loggedIn', loggedIn);
+            if (!loggedIn) {
+               document.location.href = '/';
+            } else{
+               
+            }
+             $('#appTokenId').val(loggedIn.currentUser.authdata);
+             console.log( $('#appTokenId').val(loggedIn.currentUser.authdata));
+
+        })();
+        var remoteOCRResultObj = {
+            text:'',
+            thumbnail:'',
+            time:''
+        }
+        var showRemoteOCR = false;
+        function ocrHandlerFunction(isBenchmark, remoteOnly){
+            showRemoteOCR = !isBenchmark ? true : false;
+            if(!remoteOnly) uploadImagesFront(isBenchmark);
+        }
+       
+        $( '#fileForm' )
+          .submit( function( e ) {
+            $.ajax( {
+              url: '/image',
+              type: 'POST',
+              data: new FormData( this ),
+              processData: false,
+              contentType: false,
+              success: function(result){
+                console.log('form submitted.', result);
+                calculateRemoteBenchmarkResults(result);
+                if(showRemoteOCR){
+                    remoteOCRResultObj = result;
+                       
+                }
+              }
+            } );
+            e.preventDefault();
+          } );
+        /*$('#fileForm').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+              url: $('#fileForm').attr('action'),
+              type: 'post',
+              data : $('#fileForm').serialize(),
+              success: function(result){
+                console.log('form submitted.', result);
+              },
+              error: function(data, error){
+                console.log('ERROR',error);
+              }
+            });
+        });*/
+        /*function sendForm(form) {
+            var formData = new FormData(form);
+
+            var fileInput = document.getElementById('fileInput');
+            var files = fileInput.files;
+            for (var i = 0, file; file = files[i]; ++i) {
+            formData.append(file.name, file);
+            }
+            console.log('tes');
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', form.action, true);
+            xhr.onprogress = function () {
+                console.log('LOADING', xhr.readyState); // readyState will be 3
+            };
+
+            xhr.onload = function(e) { 
+                console.log('asd', xhr.response);
+                console.log('DONE', xhr.readyState); // readyState will be 4
+                console.log(e); 
+            };
+
+            xhr.send(formData);
+
+            return false; // Prevent page from submitting.
+        }*/
+        function benchMarkFunction(form){
+            uploadImagesFront(true);
+            //sendForm(form);
+        }
+        
+        var processingStarted = false;
+        var startingTime;
+        var startingTimeTotal;
+        function calculateRemoteBenchmarkResults(remoteResults){
+            for (var i = 0; i < remoteResults.length; i++) {
+                var timeString = remoteResults[i].time;
+                var timeasInteger = parseInt(timeString.split('ms')[0]);
+                benchMarkObj.remote.images.push({text:remoteResults[i].text, processingTime:timeasInteger});
+            }
+            var imageList= benchMarkObj.remote.images;
+            benchMarkObj.remote.processingTime = calcTotalTime(imageList);
+            benchMarkObj.remote.average = calcAverage(imageList);
+            benchMarkObj.remote.min = calcMin(imageList);
+            benchMarkObj.remote.max = calcMax(imageList);
+        }
+        function calculateBenchmarkResults(){
+            var imageList = benchMarkObj.local.images;
+            console.log('imageList', imageList);
+            benchMarkObj.local.processingTime = calcTotalTime(imageList);
+            benchMarkObj.local.average = calcAverage(imageList);
+            benchMarkObj.local.min = calcMin(imageList);
+            benchMarkObj.local.max = calcMax(imageList);
+
+        }
+        var calcTotalTime = function(images){
+            var total = 0;
+            for (var i = 0; i < images.length; i++) {
+                total += images[i].processingTime;
+            }
+            return total;
+        }
+        var calcAverage = function(images){
+            var totalTime = calcTotalTime(images);
+            return totalTime / images.length;
+        }
+        var calcMin = function(images){
+            var min = images[0].processingTime;
+            for (var i = 0; i < images.length; i++) {
+                min = images[i].processingTime < min ? images[i].processingTime : min;
+            }
+            return min;
+        }
+        var calcMax = function(images){
+            var max = images[0].processingTime;
+            for (var i = 0; i < images.length; i++) {
+                min = images[i].processingTime > max ? images[i].processingTime : max;
+            }
+            return min;
+        }
+        var benchMarkObj = {
+            numberOfImages : 0,
+            local:{
+                name:'Local Mode',
+                processingTime : 0,
+                images: [
+                ],
+                average:null,
+                median:null,
+                max:null,
+                min:null
+            }, 
+            remote:{
+                name: 'Remote Mode',
+                processingTime: 0,
+                images: [
+                
+                ],
+                average:null,
+                median:null,
+                max:null,
+                min:null
+
+            }
+        };
+        var OCRResultOBj = {
+            text:'',
+            processingTime:null
+        };
+
+        function benchmarkProgressStartTotal(){
+            startingTimeTotal = new Date();
+            console.log('startingTimeTotal', startingTimeTotal);
+
+        }
+        function benchmarkProgressStart(){
+            if(!processingStarted){
+                startingTime = new Date();
+                processingStarted = true;
+                return startingTime;
+            }
+
+        }
+        function benchmarkProgressStop(stopTotal){
+            if(stopTotal){
+                console.log('total!')
+                var total = Date.parse(new Date()) - Date.parse(startingTimeTotal);
+                benchMarkObj.local.processingTime = total;
+                return total;
+            }
+            if(processingStarted){
+                var millisseconds = Date.parse(new Date()) - Date.parse(startingTime);
+                processingStarted = false;
+                return millisseconds;
+            }
+        }
+      
+        var benchmarkMode = false;
+        function uploadImagesFront(benchMode){
+            $('#document-content').addClass('hidden');
+            benchmarkMode = benchMode ? true : false;
+            OCRResultOBj.text = '';
+            var fileInput = document.getElementById('fileInput');
+            var files = fileInput.files;
+            console.log(files);
+            benchMarkObj.numberOfImages = files.length;
+            var i = 0;
+            var processImages = function(){
+                if(i == files.length){
+                    console.log('STOP', benchmarkProgressStop);
+                    //benchMarkObj.local.processingTime = benchmarkProgressStop(true);
+                    calculateBenchmarkResults();
+                    displayResults(OCRResultOBj.text, benchmarkMode);
+
+                    started = false;
+                } else {
+                    handleFrontOCR(files[i], i, processImages);
+                    i++; 
+                }
+            }
+            processImages();
+            
+        }
+        var started = false;
+        function handleFrontOCR(file, filecount, callback){
+            console.log(file);
+            var count = filecount;
+            Tesseract.recognize(file)
+                .progress(function(message){
+                    console.log(message);
+                    obj = JSON.parse( JSON.stringify(message) );
+                    progress(obj.status, obj.progress, file);
+                    if(obj.status == 'recognizing text'){
+                        if(!started){
+                            benchmarkProgressStartTotal();
+                            started = true;
+                        }
+                        benchmarkProgressStart();
+                    }
+                    //document.getElementById('test').innerHTML = obj.status;
+                })
+                .then(function(result){
+                    console.log('RESULT', result);
+                    constructResults(result, file, count);
+                    benchmarkProgressStop(false);
+                    callback();
+                })
+                .catch(function(err){
+                    console.error(err);
+                });
+        }
+        function constructResults(result, file, count){
+            var resultObj = {
+                text:result.text,
+                processingTime:benchmarkProgressStop(false)
+            };
+            benchMarkObj.local.images.push(resultObj);
+            OCRResultOBj.text += ' '+ result.text;
+        }
+        function displayResults(text, benchmarkMode) {
+            
+            var contentArea = $('#document-content > div > div');
+            contentArea.html('');
+            $('#document-content').removeClass('hidden');
+
+            if(benchmarkMode) {
+                contentArea.append('Number of processed images: ' +benchMarkObj.numberOfImages+ '<br />');
+                contentArea.append('<strong>' + benchMarkObj.local.name + '</strong><br />');
+                contentArea.append('Processing time: ' + benchMarkObj.local.processingTime + ' ms <br />');
+                contentArea.append('Average: ' + parseFloat(benchMarkObj.local.average).toFixed( 2 ) + ' ms <br />');
+                contentArea.append('Max: ' + benchMarkObj.local.max + ' ms <br />');
+                contentArea.append('Min: ' + benchMarkObj.local.min + ' ms <br />');
+                contentArea.append('<br />');
+                contentArea.append('<strong>' + benchMarkObj.remote.name + '</strong><br />');
+                contentArea.append('Processing time: '+ benchMarkObj.remote.processingTime + '<br />');
+                contentArea.append('Average: ' + parseFloat(benchMarkObj.remote.average).toFixed( 2 ) + ' ms <br />');
+                contentArea.append('Max: ' + benchMarkObj.remote.max + ' ms <br />');
+                contentArea.append('Min: ' + benchMarkObj.remote.min + ' ms <br />');
+                
+            } else {
+                //var fileCount = count+1; // starts from 0
+                /*var dataToDisplay = '<div class="col-xs-4"><h4>'+ fileCount
+                    +'. '+file.name+'</h4>'+result.text+'</div>'
+                    */
+                contentArea.append(text);
+            }
+            
+        }
+
+        function progress(phase, percentage, file) {
+            
+            $('.phase').removeClass('hidden');
+            $('.phase').html(phase);
+            $('.progress').removeClass('hidden');
+            if(phase ==  'recognizing text'){
+                $('.file-name').removeClass('hidden');
+                $('.file-name').html(file.name);
+            }
+            var valueWidth = Math.floor(percentage * 100);
+            if(valueWidth <= 100) {
+                $('.progress-bar').css('width', valueWidth+'%').attr('aria-valuenow', valueWidth);  
+                $('.progress-bar').html(valueWidth * 1 + '%');
+            }
+        }
+        </script>
+        
+    </div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+{% extends "gamestore/main.html" %}
+
+{% block content %}
+<div class="search-wrapper card focused">
+    <input id="search"><i class="material-icons">search</i>
+</div>
+<a id="categories">+ Show categories</a>
+<div id="category_window">
+	<ul id="category_list">
+		{% url 'games' as url %}
+		<li class="category"><a href="{{url}}">All</a></li>
+		{% for abbr, value in categories %}
+			<li class="category"><a class="category_link" href="?cat={{abbr}}">	
+				{{value}}
+			</a></li>
+		{% endfor %}
+	</ul>
+</div>
+
+<div id="gameslist">
+	{% include "gamestore/gameslist.html" %}
+</div>
+
+<script type="text/javascript">
+
+$('#categories').click(function (){
+	$('#category_window').slideToggle('slow');
+});
+
+$('.category a').click(function(event){
+	event.preventDefault();
+	var url = $(this).attr('href');
+	console.log(url);
+	//update the game list corresponding to the category via ajax.
+	$("#gameslist").load(url);
+});
+
+$('#search').keyup(function(){
+	gameSearch();
+});
+
+function gameSearch() {
+  var input, filter, searching, list;
+  input = $("#search");
+  filter = input.val().toUpperCase();
+  searching = $("#searching");
+  if(searching.is(":hidden")){
+  	searching.show();
+  }
+  if(filter.length == 0){
+  	searching.hide();
+  }
+  var counter = 0;
+  $('li.game').each(function(index, game){
+  	counter++;
+  	var name = $(game).find("span.title");
+  	if (name.text().toUpperCase().indexOf(filter) > -1) {
+      game.style.display = "";
+	} else {
+	  game.style.display = "none";
+	  counter--;
+	}
+  });
+  if(counter == 0){
+  	searching.hide();
+  	$('#no_results').show();
+  }else{
+  	$('#no_results').hide();
+  }
+}
+
+</script>
+
+{% endblock %}
