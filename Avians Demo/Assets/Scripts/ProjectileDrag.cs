@@ -18,6 +18,7 @@ public class ProjectileDrag : MonoBehaviour {
 	private bool clickedOn;
 	private Vector2 prevVelocity;
 
+
 	void Awake(){
 		spring = GetComponent <SpringJoint2D>();
 		catapult = spring.connectedBody.transform;
@@ -34,6 +35,7 @@ public class ProjectileDrag : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
 		if (clickedOn)
 			Dragging ();
 
